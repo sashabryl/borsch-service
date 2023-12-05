@@ -23,6 +23,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "confirm_password"
         )
 
+    @staticmethod
+    def validate_password(value):
+        try:
+            validate_password(value)
+        except exceptions.ValidationError as exc:
+            raise serializers.ValidationError(str(exc))
+        return value
+
     def validate(self, data):
         confirm_password = data.pop("confirm_password")
         if confirm_password != data.get("password"):
@@ -30,14 +38,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
                 "Passwords don't match. Make sure to enter same passwords"
             )
         return super().validate(data)
-
-    @staticmethod
-    def validata_password(value):
-        try:
-            validate_password(value)
-        except exceptions.ValidationError as exc:
-            raise serializers.ValidationError(str(exc))
-        return value
 
     def create(self, validated_data):
         return get_user_model().objects.create_user(**validated_data)
