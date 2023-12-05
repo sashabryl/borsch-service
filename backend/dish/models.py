@@ -1,3 +1,6 @@
+import os.path
+import uuid
+
 from django.db import models
 from django.db.models import UniqueConstraint
 
@@ -28,3 +31,18 @@ class Region(models.Model):
 
     def __str__(self) -> str:
         return f"{self.world_part}, {self.country}, {self.region}"
+
+
+def dish_image_file_path(instance, filename) -> str:
+    _, ext = os.path.splitext(filename)
+    filename = f"{instance.dish.id}-{uuid.uuid4()}{ext}"
+    return os.path.join("uploads/images/dishes/", filename)
+
+
+class DishImage(models.Model):
+    image = models.ImageField(upload_to=dish_image_file_path)
+    dish = models.ForeignKey(
+        "Dish", on_delete=models.CASCADE, related_name="images"
+    )
+
+
