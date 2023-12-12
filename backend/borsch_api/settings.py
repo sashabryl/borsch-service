@@ -112,7 +112,7 @@ AUTH_USER_MODEL = "user.User"
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Kiev"
 
 USE_I18N = True
 
@@ -121,6 +121,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+MEDIA_ROOT = BASE_DIR / "vol/web/media"
+
+MEDIA_URL = "/media/"
 
 STATIC_URL = "static/"
 

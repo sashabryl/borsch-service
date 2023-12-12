@@ -61,5 +61,8 @@ class Dish(models.Model):
         "Region", on_delete=models.CASCADE, related_name="dishes"
     )
 
+    class Meta:
+        verbose_name_plural = "dishes"
+
     def __str__(self) -> str:
         return self.name
