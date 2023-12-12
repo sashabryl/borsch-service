@@ -16,27 +16,22 @@ class Category(models.Model):
         return self.name
 
 
+def region_image_file_path(instance, filename) -> str:
+    _, ext = os.path.splitext(filename)
+    filename = f"{instance.name}-{uuid.uuid4()}{ext}"
+    return os.path.join("upload/images/regions", filename)
+
+
 class Region(models.Model):
-    world_part = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)
-    region = models.CharField(max_length=255)
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                fields=("world_part", "country", "region"),
-                name="unique_region_constraint",
-            )
-        ]
-
-    def __str__(self) -> str:
-        return f"{self.world_part}, {self.country}, {self.region}"
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(max_length=511)
+    image = models.ImageField(upload_to=region_image_file_path)
 
 
 def dish_image_file_path(instance, filename) -> str:
     _, ext = os.path.splitext(filename)
-    filename = f"{instance.dish.id}-{uuid.uuid4()}{ext}"
-    return os.path.join("uploads/images/dishes/", filename)
+    filename = f"{instance.dish.name}-{uuid.uuid4()}{ext}"
+    return os.path.join("uploads/images/dishes", filename)
 
 
 class DishImage(models.Model):
