@@ -24,8 +24,14 @@ def region_image_file_path(instance, filename) -> str:
 
 class Region(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    description = models.TextField(max_length=511)
+    description = models.TextField()
     image = models.ImageField(upload_to=region_image_file_path)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return self.name
 
 
 def dish_image_file_path(instance, filename) -> str:
@@ -41,3 +47,16 @@ class DishImage(models.Model):
     )
 
 
+def dish_icon_file_path(instance, filename) -> str:
+    _, ext = os.path.splitext(filename)
+    filename = f"{instance.name}-icon-{uuid.uuid4()}{ext}"
+    return os.path.join("uploads/images/dishes", filename)
+
+
+class Dish(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
+    icon = models.ImageField(upload_to=dish_icon_file_path)
+
+    def __str__(self) -> str:
+        return self.name
