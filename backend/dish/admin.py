@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Region
+from .models import Category, Region, Dish
 
 
 @admin.register(Category)
@@ -11,7 +11,12 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
-    list_display = ("id", "world_part", "country", "region")
-    list_filter = ("world_part", "country", "region")
-    search_fields = ("region",)
+    list_display = ("id", "name")
+    search_fields = ("name",)
 
+
+@admin.register(Dish)
+class DishAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "region")
+    list_filter = ("region",)
+    search_fields = ("name",)

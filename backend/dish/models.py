@@ -57,6 +57,9 @@ class Dish(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     icon = models.ImageField(upload_to=dish_icon_file_path)
+    region = models.ForeignKey(
+        "Region", on_delete=models.CASCADE, related_name="dishes"
+    )
 
     def __str__(self) -> str:
         return self.name
