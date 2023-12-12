@@ -19,13 +19,17 @@ class Category(models.Model):
 def region_image_file_path(instance, filename) -> str:
     _, ext = os.path.splitext(filename)
     filename = f"{instance.name}-{uuid.uuid4()}{ext}"
-    return os.path.join("upload/images/regions", filename)
+    return os.path.join("uploads/images/regions", filename)
 
 
 class Region(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    image = models.ImageField(upload_to=region_image_file_path)
+    image = models.ImageField(
+        upload_to=region_image_file_path,
+        null=True,
+        blank=True
+    )
 
     class Meta:
         ordering = ["name"]
@@ -56,7 +60,11 @@ def dish_icon_file_path(instance, filename) -> str:
 class Dish(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    icon = models.ImageField(upload_to=dish_icon_file_path)
+    icon = models.ImageField(
+        upload_to=dish_icon_file_path,
+        null=True,
+        blank=True
+    )
     region = models.ForeignKey(
         "Region", on_delete=models.CASCADE, related_name="dishes"
     )
