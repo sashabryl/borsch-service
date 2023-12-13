@@ -5,6 +5,12 @@ from django.db import models
 from django.db.models import UniqueConstraint
 
 
+def file_path(instance, filename, suffix, folder) -> str:
+    _, ext = os.path.splitext(filename)
+    filename = f"{suffix}-{uuid.uuid4()}{ext}"
+    return os.path.join(f"uploads/images/{folder}", filename)
+
+
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
@@ -17,19 +23,13 @@ class Category(models.Model):
 
 
 def region_image_file_path(instance, filename) -> str:
-    _, ext = os.path.splitext(filename)
-    filename = f"{instance.name}-{uuid.uuid4()}{ext}"
-    return os.path.join("uploads/images/regions", filename)
+    return file_path(instance, filename, instance.name, "regions")
 
 
 class Region(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    image = models.ImageField(
-        upload_to=region_image_file_path,
-        null=True,
-        blank=True
-    )
+    image = models.ImageField(upload_to=region_image_file_path, null=True, blank=True)
 
     class Meta:
         ordering = ["name"]
@@ -39,32 +39,22 @@ class Region(models.Model):
 
 
 def dish_image_file_path(instance, filename) -> str:
-    _, ext = os.path.splitext(filename)
-    filename = f"{instance.dish.name}-{uuid.uuid4()}{ext}"
-    return os.path.join("uploads/images/dishes", filename)
+    return file_path(instance, filename, instance.dish.name, "dishes")
 
 
 class DishImage(models.Model):
     image = models.ImageField(upload_to=dish_image_file_path)
-    dish = models.ForeignKey(
-        "Dish", on_delete=models.CASCADE, related_name="images"
-    )
+    dish = models.ForeignKey("Dish", on_delete=models.CASCADE, related_name="images")
 
 
 def dish_icon_file_path(instance, filename) -> str:
-    _, ext = os.path.splitext(filename)
-    filename = f"{instance.name}-icon-{uuid.uuid4()}{ext}"
-    return os.path.join("uploads/images/dishes", filename)
+    return file_path(instance, filename, f"{instance.name}-icon-", "dishes")
 
 
 class Dish(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    icon = models.ImageField(
-        upload_to=dish_icon_file_path,
-        null=True,
-        blank=True
-    )
+    icon = models.ImageField(upload_to=dish_icon_file_path, null=True, blank=True)
     region = models.ForeignKey(
         "Region", on_delete=models.CASCADE, related_name="dishes"
     )
