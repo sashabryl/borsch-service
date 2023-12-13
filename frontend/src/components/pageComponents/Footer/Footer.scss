@@ -1,0 +1,30 @@
+.footer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  &__container {
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    padding: 0;
+  }
+
+  &__descr {
+    font-size: 14px;
+    font-weight: 400;
+    margin-top: 40px;
+  }
+
+  &__list {
+    margin-right: 68px;
+    font-size: 14px;
+    font-weight: 400;
+    list-style: none;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

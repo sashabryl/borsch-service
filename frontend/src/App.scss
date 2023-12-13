@@ -1,0 +1,27 @@
+@import "./helpers/variables.scss";
+
+* {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    margin: 0;
+    transition: all 0.3s ease;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  a {
+    text-decoration: none;
+    color: $blackColor;
+  }
+
+  .logo {
+    background-image: url("./img/logo.svg");
+    background-repeat: no-repeat;
+    width: 144px;
+    height: 40px;
+  }

@@ -1,0 +1,15 @@
+$whiteColor: #fff;
+$blackColor: #000;
+
+
+@mixin onPhone {
+  @media (max-width:640px) {
+    @content;
+  }
+}
+
+@mixin onDesktop {
+  @media (max-width:1024px) {
+    @content;
+  }
+}
