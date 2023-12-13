@@ -4,12 +4,12 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Region, Category, Dish
+from .models import Region, Category, Dish, Like
 from .permissions import IsAdminOrReadOnly
 from .serializers import (
     RegionListSerializer,
     RegionSerializer, CategorySerializer, DishListSerializer, DishDetailSerializer,
-    DishUpdateSerializer, DishCreateSerializer, DishUpdateIconSerializer, DishUpdateImagesSerializer
+    DishUpdateSerializer, DishCreateSerializer, DishUpdateIconSerializer, DishUpdateImagesSerializer, EmptySerializer
 )
 
 
@@ -83,7 +83,8 @@ class DishViewSet(viewsets.ModelViewSet):
         if self.action == "update_icon":
             return DishUpdateIconSerializer
 
-        return DishUpdateImagesSerializer
+        if self.action == "update_images":
+            return DishUpdateImagesSerializer
 
     @action(["POST"], detail=True, url_path="update-icon")
     def update_icon(self, request, pk=None):
@@ -112,21 +113,22 @@ class DishViewSet(viewsets.ModelViewSet):
         ["POST"],
         detail=True,
         url_path="like-unlike",
-        permission_classes=[IsAuthenticated]
+        permission_classes=[IsAuthenticated,],
+        serializer_class=None
     )
     def like_unlike(self, request, pk=None):
         dish = self.get_object()
-        if request.user in dish.liked_by:
-            dish.liked_by.remove(request.user)
-            dish.save()
+        like, created = Like.objects.get_or_create(
+            user=request.user, dish=dish
+        )
+        print('JFIEOWJ')
+        if created:
             return Response(
-                f"Ceased to like {dish} successfully",
+                f"Add {dish} to favourite dishes successfully",
                 status=status.HTTP_200_OK
             )
-
-        dish.liked_by.add(request.user)
-        dish.save()
+        like.delete()
         return Response(
-            f"Add {dish} to favourite dishes successfully",
+            f"Ceased to like {dish} successfully",
             status=status.HTTP_200_OK
         )

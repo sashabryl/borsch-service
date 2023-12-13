@@ -4,6 +4,10 @@ from rest_framework import serializers
 from .models import Region, Category, Dish, DishImage
 
 
+class EmptySerializer(serializers.Serializer):
+    pass
+
+
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
