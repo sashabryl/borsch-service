@@ -25,7 +25,12 @@ class Migration(migrations.Migration):
                 ),
                 ("name", models.CharField(max_length=255, unique=True)),
                 ("description", models.TextField()),
-                ("icon", models.ImageField(upload_to=dish.models.dish_icon_file_path)),
+                (
+                    "icon",
+                    models.ImageField(
+                        upload_to=dish.models.dish_icon_file_path
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
@@ -42,13 +47,18 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "image",
-                    models.ImageField(upload_to=dish.models.dish_image_file_path),
+                    models.ImageField(
+                        upload_to=dish.models.dish_image_file_path
+                    ),
                 ),
             ],
         ),
         migrations.AlterModelOptions(
             name="category",
-            options={"ordering": ["name"], "verbose_name_plural": "categories"},
+            options={
+                "ordering": ["name"],
+                "verbose_name_plural": "categories",
+            },
         ),
         migrations.AlterModelOptions(
             name="region",
