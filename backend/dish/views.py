@@ -1,7 +1,10 @@
 from rest_framework import viewsets
 
-from .models import Region
-from .serializers import RegionListSerializer, RegionSerializer
+from .models import Region, Category
+from .serializers import (
+    RegionListSerializer,
+    RegionSerializer, CategorySerializer,
+)
 
 
 class RegionViewSet(viewsets.ModelViewSet):
@@ -12,4 +15,9 @@ class RegionViewSet(viewsets.ModelViewSet):
             return RegionListSerializer
 
         return RegionSerializer
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
