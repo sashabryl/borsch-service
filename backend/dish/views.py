@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -28,17 +29,37 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class DishViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Dish.objects.all()
+
         if self.action == "list":
             queryset = queryset.select_related(
                 "region"
             ).prefetch_related("categories")
 
+        name = self.request.query_params.get("name")
+        region = self.request.query_params.get("region")
+        categories_str = self.request.query_params.get("categories")
+
+        if name:
+            queryset = queryset.filter(name__icontains=name)
+
+        if region:
+            queryset = queryset.filter(region__name__icontains=region)
+
+        if categories_str:
+            categories = categories_str.split(",")
+            categories_filter = Q()
+            for category in categories:
+                categories_filter |= Q(
+                    categories__name__icontains=category.strip()
+                )
+            queryset = queryset.filter(categories_filter)
+
         if self.action == "retrieve":
             queryset = queryset.select_related(
                 "region"
-            ).prefetch_related("categories__name", "images")
+            ).prefetch_related("categories", "images")
 
-        return queryset
+        return queryset.distinct()
 
     def get_serializer_class(self):
         if self.action == "create":
