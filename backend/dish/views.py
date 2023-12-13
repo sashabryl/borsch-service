@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Region, Category, Dish
+from .permissions import IsAdminOrReadOnly
 from .serializers import (
     RegionListSerializer,
     RegionSerializer, CategorySerializer, DishListSerializer, DishDetailSerializer,
@@ -13,6 +14,7 @@ from .serializers import (
 
 class RegionViewSet(viewsets.ModelViewSet):
     queryset = Region.objects.all()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -24,9 +26,12 @@ class RegionViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class DishViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get_queryset(self):
         queryset = Dish.objects.all()
 
@@ -102,5 +107,3 @@ class DishViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
