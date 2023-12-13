@@ -1,6 +1,7 @@
 import os.path
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.db.models import UniqueConstraint
 
@@ -57,6 +58,9 @@ class Dish(models.Model):
     icon = models.ImageField(upload_to=dish_icon_file_path, null=True, blank=True)
     region = models.ForeignKey(
         "Region", on_delete=models.CASCADE, related_name="dishes"
+    )
+    liked_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="liked_dishes"
     )
 
     class Meta:
