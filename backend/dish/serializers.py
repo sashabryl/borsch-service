@@ -11,9 +11,7 @@ class EmptySerializer(serializers.Serializer):
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
-        fields = (
-            "id", "name", "description", "image"
-        )
+        fields = ("id", "name", "description", "image")
 
 
 class RegionListSerializer(serializers.ModelSerializer):
@@ -62,7 +60,7 @@ class DishCreateSerializer(serializers.ModelSerializer):
             "region",
             "images",
             "categories",
-            "upload_images"
+            "upload_images",
         )
         read_only_fields = ("id", "images")
 
@@ -100,7 +98,7 @@ class DishUpdateImagesSerializer(DishCreateSerializer):
             max_length=100000000, allow_empty_file=False, use_url=False
         ),
         write_only=True,
-        required=False
+        required=False,
     )
 
     class Meta:

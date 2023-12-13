@@ -8,8 +8,15 @@ from .models import Region, Category, Dish, Like
 from .permissions import IsAdminOrReadOnly
 from .serializers import (
     RegionListSerializer,
-    RegionSerializer, CategorySerializer, DishListSerializer, DishDetailSerializer,
-    DishUpdateSerializer, DishCreateSerializer, DishUpdateIconSerializer, DishUpdateImagesSerializer, EmptySerializer
+    RegionSerializer,
+    CategorySerializer,
+    DishListSerializer,
+    DishDetailSerializer,
+    DishUpdateSerializer,
+    DishCreateSerializer,
+    DishUpdateIconSerializer,
+    DishUpdateImagesSerializer,
+    EmptySerializer,
 )
 
 
@@ -37,9 +44,9 @@ class DishViewSet(viewsets.ModelViewSet):
         queryset = Dish.objects.all()
 
         if self.action == "list":
-            queryset = queryset.select_related(
-                "region"
-            ).prefetch_related("categories")
+            queryset = queryset.select_related("region").prefetch_related(
+                "categories"
+            )
 
         name = self.request.query_params.get("name")
         region = self.request.query_params.get("region")
@@ -61,9 +68,9 @@ class DishViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(categories_filter)
 
         if self.action == "retrieve":
-            queryset = queryset.select_related(
-                "region"
-            ).prefetch_related("categories", "images")
+            queryset = queryset.select_related("region").prefetch_related(
+                "categories", "images"
+            )
 
         return queryset.distinct()
 
@@ -113,22 +120,23 @@ class DishViewSet(viewsets.ModelViewSet):
         ["POST"],
         detail=True,
         url_path="like-unlike",
-        permission_classes=[IsAuthenticated,],
-        serializer_class=None
+        permission_classes=[
+            IsAuthenticated,
+        ],
+        serializer_class=None,
     )
     def like_unlike(self, request, pk=None):
         dish = self.get_object()
         like, created = Like.objects.get_or_create(
             user=request.user, dish=dish
         )
-        print('JFIEOWJ')
+        print("JFIEOWJ")
         if created:
             return Response(
                 f"Add {dish} to favourite dishes successfully",
-                status=status.HTTP_200_OK
+                status=status.HTTP_200_OK,
             )
         like.delete()
         return Response(
-            f"Ceased to like {dish} successfully",
-            status=status.HTTP_200_OK
+            f"Ceased to like {dish} successfully", status=status.HTTP_200_OK
         )

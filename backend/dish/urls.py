@@ -10,6 +10,4 @@ router.register("regions", RegionViewSet)
 router.register("categories", CategoryViewSet)
 router.register("dishes", DishViewSet, basename="dish")
 
-urlpatterns = [
-    path("", include(router.urls))
-]
+urlpatterns = [path("", include(router.urls))]

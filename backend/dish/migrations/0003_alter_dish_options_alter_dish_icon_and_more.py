@@ -18,14 +18,18 @@ class Migration(migrations.Migration):
             model_name="dish",
             name="icon",
             field=models.ImageField(
-                blank=True, null=True, upload_to=dish.models.dish_icon_file_path
+                blank=True,
+                null=True,
+                upload_to=dish.models.dish_icon_file_path,
             ),
         ),
         migrations.AlterField(
             model_name="region",
             name="image",
             field=models.ImageField(
-                blank=True, null=True, upload_to=dish.models.region_image_file_path
+                blank=True,
+                null=True,
+                upload_to=dish.models.region_image_file_path,
             ),
         ),
     ]

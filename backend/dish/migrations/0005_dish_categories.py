@@ -12,6 +12,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="dish",
             name="categories",
-            field=models.ManyToManyField(related_name="dishes", to="dish.category"),
+            field=models.ManyToManyField(
+                related_name="dishes", to="dish.category"
+            ),
         ),
     ]
