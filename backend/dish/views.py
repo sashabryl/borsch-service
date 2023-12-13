@@ -1,9 +1,12 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from .models import Region, Category
+from .models import Region, Category, Dish
 from .serializers import (
     RegionListSerializer,
-    RegionSerializer, CategorySerializer,
+    RegionSerializer, CategorySerializer, DishListSerializer, DishDetailSerializer,
+    DishUpdateSerializer, DishCreateSerializer, DishUpdateIconSerializer, DishUpdateImagesSerializer
 )
 
 
@@ -20,4 +23,63 @@ class RegionViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+
+class DishViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        queryset = Dish.objects.all()
+        if self.action == "list":
+            queryset = queryset.select_related(
+                "region"
+            ).prefetch_related("categories")
+
+        if self.action == "retrieve":
+            queryset = queryset.select_related(
+                "region"
+            ).prefetch_related("categories__name", "images")
+
+        return queryset
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return DishCreateSerializer
+
+        if self.action == "list":
+            return DishListSerializer
+
+        if self.action == "retrieve":
+            return DishDetailSerializer
+
+        if self.action in ["update", "partial_update"]:
+            return DishUpdateSerializer
+
+        if self.action == "update_icon":
+            return DishUpdateIconSerializer
+
+        if self.action == "update_images":
+            return DishUpdateImagesSerializer
+
+    @action(["POST"], detail=True, url_path="update-icon")
+    def update_icon(self, request, pk=None):
+        """
+        Sets the icon field to a new image or, if not given, sets it to null
+        """
+        dish = self.get_object()
+        serializer = self.get_serializer(dish, request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(["POST"], detail=True, url_path="update-images")
+    def update_images(self, request, pk=None):
+        """
+        Deletes all the DishImage instances related
+        to the Dish and, if given, creates new ones
+        """
+        dish = self.get_object()
+        serializer = self.get_serializer(dish, request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 

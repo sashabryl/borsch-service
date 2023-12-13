@@ -62,6 +62,7 @@ class Dish(models.Model):
     liked_by = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name="liked_dishes"
     )
+    categories = models.ManyToManyField("Category", related_name="dishes")
 
     class Meta:
         verbose_name_plural = "dishes"
