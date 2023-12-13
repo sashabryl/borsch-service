@@ -59,9 +59,6 @@ class Dish(models.Model):
     region = models.ForeignKey(
         "Region", on_delete=models.CASCADE, related_name="dishes"
     )
-    liked_by = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="liked_dishes"
-    )
     categories = models.ManyToManyField("Category", related_name="dishes")
 
     class Meta:
@@ -69,3 +66,16 @@ class Dish(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class Like(models.Model):
+    dish = models.ForeignKey(
+        "Dish",
+        on_delete=models.CASCADE,
+        related_name="likes"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="likes"
+    )

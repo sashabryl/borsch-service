@@ -83,8 +83,7 @@ class DishViewSet(viewsets.ModelViewSet):
         if self.action == "update_icon":
             return DishUpdateIconSerializer
 
-        if self.action == "update_images":
-            return DishUpdateImagesSerializer
+        return DishUpdateImagesSerializer
 
     @action(["POST"], detail=True, url_path="update-icon")
     def update_icon(self, request, pk=None):
@@ -108,3 +107,26 @@ class DishViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(
+        ["POST"],
+        detail=True,
+        url_path="like-unlike",
+        permission_classes=[IsAuthenticated]
+    )
+    def like_unlike(self, request, pk=None):
+        dish = self.get_object()
+        if request.user in dish.liked_by:
+            dish.liked_by.remove(request.user)
+            dish.save()
+            return Response(
+                f"Ceased to like {dish} successfully",
+                status=status.HTTP_200_OK
+            )
+
+        dish.liked_by.add(request.user)
+        dish.save()
+        return Response(
+            f"Add {dish} to favourite dishes successfully",
+            status=status.HTTP_200_OK
+        )
